@@ -1,40 +1,98 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import Budget from '../components/Budget';
 import {
   Button,
   Text,
-  Container,
+  SimpleGrid,
   Flex,
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
 } from '@chakra-ui/react';
 
 const Index = () => (
-  <Container>
+  <Flex direction="column" align="center" margin="0 auto" p={10} maxW="400">
     <Range />
-    <div>
-      <h1>Here's a fresh start.</h1>
-    </div>
-  </Container>
+    <Attempts />
+    <Button>Log Putts</Button>
+    <Table variant="simple" my="8">
+      <Thead>
+        <Tr>
+          <Th>Distance</Th>
+          <Th isNumeric>Makes/Attempts</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        <Tr>
+          <Td>15ft</Td>
+          <Td isNumeric>8/10</Td>
+        </Tr>
+      </Tbody>
+    </Table>
+  </Flex>
 );
 
 export default Index;
 
-const AppContainer = styled.div`
-  margin: 0 auto;
-  max-width: 800px;
-`;
+const PuttLogger = (props) => {
+  const [value, setValue] = useState(15);
+
+  function roundByFive(x) {
+    return Math.ceil(x / 5) * 5;
+  }
+
+  function increment() {
+    let newValue =
+      value % 5 === 0 ? roundByFive(value + 5) : roundByFive(value);
+    setValue(newValue);
+  }
+
+  function decrement() {
+    let newValue = value - 5 <= 5 ? 5 : roundByFive(value - 5);
+    setValue(newValue);
+  }
+
+  const [makes, setMakes] = useState(0);
+
+  function handleChange(e) {
+    const num = e.target.dataset['number'];
+    num == makes ? setMakes(0) : setMakes(num);
+  }
+  const attemptsArray = [...Array(10).keys()].map((i) => (i = i + 1));
+
+  return (
+    <Flex direction="column" align="center" margin="0 auto" p={10} maxW="400">
+      <Range />
+      <Attempts />
+      <Button>Log Putts</Button>
+      <Table variant="simple" my="8">
+        <Thead>
+          <Tr>
+            <Th>Distance</Th>
+            <Th isNumeric>Makes/Attempts</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          <Tr>
+            <Td>15ft</Td>
+            <Td isNumeric>8/10</Td>
+          </Tr>
+        </Tbody>
+      </Table>
+    </Flex>
+  );
+};
 
 const Range = (props) => {
   const [value, setValue] = useState(15);
-
-  function handleChange(e) {
-    setValue(e.target.value);
-    console.log(value);
-  }
 
   function roundByFive(x) {
     return Math.ceil(x / 5) * 5;
@@ -53,8 +111,8 @@ const Range = (props) => {
 
   return (
     <Flex direction="column" align="center">
-      <label htmlFor="volume">Distance</label>
-      <Text>{value}ft</Text>
+      <Text textTransform="uppercase">Distance</Text>
+      <Text fontSize="3xl">{value}ft</Text>
       <Flex>
         <Button onClick={decrement}>-</Button>
         <Slider
@@ -77,61 +135,41 @@ const Range = (props) => {
   );
 };
 
-const RangeContainer = styled.div`
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 4rem;
+const Attempts = (props) => {
+  const [makes, setMakes] = useState(0);
 
-  label {
-    text-transform: uppercase;
-    margin-bottom: 2rem;
+  function handleChange(e) {
+    const num = e.target.dataset['number'];
+    num == makes ? setMakes(0) : setMakes(num);
   }
+  const attemptsArray = [...Array(10).keys()].map((i) => (i = i + 1));
 
-  input {
-    max-width: 300px;
-  }
-
-  .range-flex {
-    display: flex;
-  }
-
-  .range-btn {
-    width: 20px;
-    height: 20px;
-    background: ${(props) => props.theme.colors.gray200};
-    text-align: center;
-    border-radius: 4px;
-  }
-`;
-
-const BudgetHeader = styled.div`
-  padding: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  @media (max-width: 500px) {
-    flex-direction: column;
-    justify-content: center;
-  }
-`;
-
-const BudgetTitle = styled.h2`
-  font-weight: 400;
-  color: ${(props) => props.theme.colors.gray700};
-`;
-
-const InsetContainer = styled.div`
-  background: ${(props) => props.theme.colors.gray100};
-  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.06);
-  border-radius: 5px;
-  max-width: 800px;
-  min-height: 70vh;
-  /* overflow-y: scroll; */
-  margin: 0 auto;
-  padding: 2rem;
-  @media screen and (max-width: 800px) {
-    padding: 2rem 1rem;
-  }
-`;
+  return (
+    <Flex direction="column" align="center" my={8}>
+      <Text textTransform="uppercase">Makes</Text>
+      <Text fontSize="3xl">{makes}/10</Text>
+      <SimpleGrid
+        columns="5"
+        rows="2"
+        gap="4"
+        bg="gray.100"
+        borderRadius="8"
+        width="100%"
+        p="2"
+      >
+        {attemptsArray.map((n, i) => (
+          <Button
+            key={n}
+            data-number={n}
+            bg={n <= makes ? 'green.200' : 'white'}
+            borderRadius="4"
+            onClick={handleChange}
+            color={n <= makes ? 'green.700' : 'gray.500'}
+          >
+            {n}
+          </Button>
+        ))}
+      </SimpleGrid>
+    </Flex>
+  );
+};
