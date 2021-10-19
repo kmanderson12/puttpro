@@ -1,17 +1,12 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import { RepeatBlock } from '../components/icons';
 
 const Header = () => (
   <StyledHeader>
     <Link href="/">
       <a>
         <Logo>
-          <h1>
-            due<span className="light">on</span>
-            <span className="medium">repeat</span>
-          </h1>
-          <RepeatBlock />
+          <h1>PuttPro</h1>
         </Logo>
       </a>
     </Link>
@@ -22,15 +17,14 @@ export default Header;
 
 const Logo = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  margin: 0 auto;
   h1 {
     font-size: 3rem;
-    font-weight: 400;
+    font-weight: 700;
     position: relative;
     padding: 0.5rem;
-    color: ${props => props.theme.colors.green100};
+    color: ${(props) => props.theme.colors.gray700};
     text-decoration: none;
     .light {
       font-weight: 300;
@@ -43,8 +37,11 @@ const Logo = styled.div`
 
 const StyledHeader = styled.header`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 800px;
   padding: 2rem;
   img {
     height: 40px;

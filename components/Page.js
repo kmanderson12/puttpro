@@ -65,7 +65,7 @@ const GlobalStyle = createGlobalStyle`
         font-family: 'Roboto', Helvetica, Arial, sans-serif;
         width: 100%;
         min-height: 100vh;
-        color: '${(props) => props.theme.colors.gray800}';
+        color: '${(props) => props.theme.colors.gray700}';
     }
     a {
         text-decoration: none;
