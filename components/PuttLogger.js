@@ -139,8 +139,17 @@ const Distance = ({
 }) => {
   return (
     <Flex direction="column" align="center">
-      <Text textTransform="uppercase">Distance</Text>
-      <Text fontSize="3xl">{value}ft</Text>
+      <Text
+        fontSize="sm"
+        fontWeight="semibold"
+        color="gray.700"
+        textTransform="uppercase"
+      >
+        Distance
+      </Text>
+      <Text fontSize="3xl" margin="2">
+        {value}ft
+      </Text>
       <Flex>
         <Button onClick={decrement}>-</Button>
         <Slider
@@ -168,8 +177,17 @@ const Attempts = ({ makes, handleChange }) => {
 
   return (
     <Flex direction="column" align="center" my={8}>
-      <Text textTransform="uppercase">Makes</Text>
-      <Text fontSize="3xl">{makes}/10</Text>
+      <Text
+        fontSize="sm"
+        color="gray.700"
+        fontWeight="semibold"
+        textTransform="uppercase"
+      >
+        Makes
+      </Text>
+      <Text fontSize="3xl" margin="2">
+        {makes}/10
+      </Text>
       <SimpleGrid
         columns="5"
         rows="2"
@@ -178,6 +196,7 @@ const Attempts = ({ makes, handleChange }) => {
         borderRadius="8"
         width="100%"
         p="2"
+        my="4"
       >
         {attemptsArray.map((n, i) => (
           <Button
@@ -197,7 +216,7 @@ const Attempts = ({ makes, handleChange }) => {
 };
 
 const Log = ({ puttLog }) => (
-  <Box height="350" minW="300" overflow="auto" marginBottom="10">
+  <Box maxHeight="350" minW="300" overflow="auto" marginBottom="10">
     <Table variant="simple" my="8">
       <Thead position="sticky" top="0" background="white">
         <Tr>
@@ -241,7 +260,13 @@ const Stats = ({ c1Stats, c2Stats }) => (
 const Notes = ({ notes, handleInputChange }) => {
   return (
     <Box m={8} width="100%">
-      <Text textTransform="uppercase" mb={8}>
+      <Text
+        fontSize="sm"
+        color="gray.700"
+        fontWeight="semibold"
+        textTransform="uppercase"
+        textAlign="center"
+      >
         Notes
       </Text>
       <Textarea
@@ -251,6 +276,7 @@ const Notes = ({ notes, handleInputChange }) => {
         size="sm"
         width="100%"
         borderRadius={8}
+        my="4"
       />
     </Box>
   );

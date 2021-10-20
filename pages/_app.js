@@ -10,7 +10,9 @@ export default class MyApp extends App {
     return (
       <GlobalProvider>
         <ChakraProvider>
-          <Component {...pageProps} />
+          <Page>
+            <Component {...pageProps} />
+          </Page>
         </ChakraProvider>
       </GlobalProvider>
     );
