@@ -52,7 +52,7 @@ export default function PuttLogger(props) {
     setNotes(inputValue);
   };
 
-  const minDistance = 5;
+  const minDistance = 10;
   const maxDistance = 60;
 
   function roundByFive(x) {
@@ -178,13 +178,23 @@ const Distance = ({
           <SliderTrack>
             <SliderFilledTrack />
           </SliderTrack>
-          <SliderThumb />
+          <SliderThumb boxSize={6}>
+            <Box as={Disc} />
+          </SliderThumb>
         </Slider>
         <Button onClick={increment}>+</Button>
       </Flex>
     </Flex>
   );
 };
+
+const Disc = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <text y="1em" x=".1em" fontSize="80">
+      🥏
+    </text>
+  </svg>
+);
 
 const Attempts = ({ makes, handleChange }) => {
   const attemptsArray = [...Array(10).keys()].map((i) => (i = i + 1));
@@ -291,7 +301,7 @@ const Notes = ({ notes, handleInputChange }) => {
       <Textarea
         value={notes}
         onChange={handleInputChange}
-        placeholder="Remember to shake hands with the basket. Focus on one chain link."
+        placeholder="What worked? What didn't work? Write anything you'd like future you to remember."
         size="sm"
         borderRadius={8}
         my="4"
