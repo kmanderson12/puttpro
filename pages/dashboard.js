@@ -1,8 +1,9 @@
 import { useContext } from 'react';
+import { connectToDatabase } from '../utils/mongodb';
 import { Heading, Flex, Text, Button, Code } from '@chakra-ui/react';
 import { store } from '../components/context/GlobalProvider';
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   const { state } = useContext(store);
   return (
     <Flex
@@ -15,10 +16,20 @@ const Dashboard = () => {
     >
       <Heading>Dashboard</Heading>
       <Code p="4" m="4" borderRadius="8" textAlign="left">
-        {JSON.stringify(state, null, 4)}
+        {JSON.stringify(props.puttLogs, null, 4)}
       </Code>
     </Flex>
   );
 };
 
 export default Dashboard;
+
+export async function getServerSideProps() {
+  const { db } = await connectToDatabase();
+  const puttLogs = await db.collection('putt_logs').find({}).toArray();
+  return {
+    props: {
+      puttLogs: JSON.parse(JSON.stringify(puttLogs)),
+    },
+  };
+}
