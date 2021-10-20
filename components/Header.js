@@ -32,7 +32,7 @@ const Header = () => {
         <NextLink href="/new">
           <Link mx={{ base: '2', md: '6' }}>New</Link>
         </NextLink>
-        <NextLink href="/dashboard">
+        <NextLink href="/profile">
           <Link ml={{ base: '2', md: '6' }}>
             <Avatar bg="blue.500" />
           </Link>
