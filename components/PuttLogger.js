@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import router, { useRouter } from 'next/router';
 import {
   Button,
   Box,
   CircularProgress,
   CircularProgressLabel,
   Text,
+  Heading,
   SimpleGrid,
   Flex,
   Slider,
@@ -21,6 +23,7 @@ import {
   Td,
   Textarea,
 } from '@chakra-ui/react';
+import { store, ADD_ITEM } from '../components/context/GlobalProvider';
 import {
   calculateMakes,
   calculateAttempts,
@@ -28,6 +31,7 @@ import {
 } from '../utils/calcFunctions';
 
 export default function PuttLogger(props) {
+  const { dispatch } = useContext(store);
   const [distance, setDistance] = useState(15);
   const [makes, setMakes] = useState(0);
   const [puttLog, setPuttLog] = useState([]);
@@ -97,8 +101,28 @@ export default function PuttLogger(props) {
     setCircleStats(distance, makes);
   }
 
+  function handleSubmit() {
+    const data = {
+      puttLog,
+      notes,
+      c1Stats,
+      c2Stats,
+    };
+    console.log(data);
+    dispatch({ type: ADD_ITEM, payload: data });
+    router.push('/dashboard');
+  }
+
   return (
-    <Flex direction="column" align="center" margin="0 auto" p={10} maxW="400">
+    <Flex
+      direction="column"
+      align="center"
+      margin="0 auto"
+      mt="8"
+      pb="10"
+      maxW="400"
+    >
+      <Heading mb="8">New Putt Log</Heading>
       <Distance
         value={distance}
         increment={increment}
@@ -114,7 +138,7 @@ export default function PuttLogger(props) {
       <Log puttLog={puttLog} />
       <Stats c1Stats={c1Stats} c2Stats={c2Stats} />
       <Notes notes={notes} handleInputChange={handleNotesChange} />
-      <Button>Finish Session</Button>
+      <Button onClick={handleSubmit}>Finish Session</Button>
     </Flex>
   );
 }

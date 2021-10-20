@@ -17,13 +17,13 @@ const Header = () => (
       </Link>
     </NextLink>
     <Flex align="center">
-      <NextLink href="#">
+      <NextLink href="/dashboard">
         <Link mx={{ base: '2', md: '6' }}>Dashboard</Link>
       </NextLink>
       <NextLink href="/new">
         <Link mx={{ base: '2', md: '6' }}>New</Link>
       </NextLink>
-      <NextLink href="#">
+      <NextLink href="/dashboard">
         <Link ml={{ base: '2', md: '6' }}>
           <Avatar bg="blue.500" />
         </Link>
