@@ -9,7 +9,9 @@ class Page extends Component {
       <>
         <Meta />
         <Header />
-        <Box margin="0 auto">{this.props.children}</Box>
+        <Box margin="0 auto" maxWidth="800">
+          {this.props.children}
+        </Box>
       </>
     );
   }

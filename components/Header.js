@@ -1,5 +1,5 @@
 import NextLink from 'next/link';
-import { Flex, Box, Heading, Text, Link } from '@chakra-ui/react';
+import { Avatar, Flex, Box, Heading, Text, Link } from '@chakra-ui/react';
 
 const Header = () => (
   <Flex
@@ -16,14 +16,22 @@ const Header = () => (
         <Heading>PuttPro</Heading>
       </Link>
     </NextLink>
-    <Box>
+    <Flex align="center">
       <NextLink href="#">
         <Link mx={{ base: '2', md: '6' }}>Dashboard</Link>
       </NextLink>
-      <NextLink href="#">
-        <Link mx={{ base: '2', md: '6' }}>Profile</Link>
+      <NextLink href="/new">
+        <Link mx={{ base: '2', md: '6' }}>New</Link>
       </NextLink>
-    </Box>
+      <NextLink href="#">
+        <Link ml={{ base: '2', md: '6' }}>
+          <Avatar bg="blue.500" />
+        </Link>
+      </NextLink>
+      {/* <NextLink href="#">
+        <Link mx={{ base: '2', md: '6' }}>Profile</Link>
+      </NextLink> */}
+    </Flex>
   </Flex>
 );
 

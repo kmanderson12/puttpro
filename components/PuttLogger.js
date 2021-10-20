@@ -14,12 +14,18 @@ import {
   Table,
   Thead,
   Tbody,
+  TableCaption,
   Tfoot,
   Tr,
   Th,
   Td,
   Textarea,
 } from '@chakra-ui/react';
+import {
+  calculateMakes,
+  calculateAttempts,
+  calculatePercent,
+} from '../utils/calcFunctions';
 
 export default function PuttLogger(props) {
   const [distance, setDistance] = useState(15);
@@ -79,22 +85,6 @@ export default function PuttLogger(props) {
           attempts: calculateAttempts(c2Stats.attempts),
           percent: calculatePercent(c2Stats.makes, makes, c2Stats.attempts),
         });
-  }
-
-  function calculateMakes(currentMakes, newMakes) {
-    return parseFloat(currentMakes) + parseFloat(newMakes);
-  }
-
-  function calculateAttempts(currentAttempts) {
-    return currentAttempts + 10;
-  }
-
-  function calculatePercent(currentMakes, newMakes, currentAttempts) {
-    return Math.round(
-      (calculateMakes(currentMakes, newMakes) /
-        calculateAttempts(currentAttempts)) *
-        100
-    );
   }
 
   function logPutts() {
@@ -206,6 +196,9 @@ const Attempts = ({ makes, handleChange }) => {
             borderRadius="4"
             onClick={handleChange}
             color={n <= makes ? 'green.700' : 'gray.500'}
+            _hover={{
+              background: `${n <= makes ? 'green.200' : 'white'}`,
+            }}
           >
             {n}
           </Button>
@@ -233,7 +226,9 @@ const Log = ({ puttLog }) => (
             </Tr>
           ))
         ) : (
-          <Tr textAlign="center">Log some putts.</Tr>
+          <Tr textAlign="center">
+            <Td width="100%">No putts logged yet.</Td>
+          </Tr>
         )}
       </Tbody>
     </Table>
@@ -274,7 +269,6 @@ const Notes = ({ notes, handleInputChange }) => {
         onChange={handleInputChange}
         placeholder="Remember to shake hands with the basket. Focus on one chain link."
         size="sm"
-        width="100%"
         borderRadius={8}
         my="4"
       />
