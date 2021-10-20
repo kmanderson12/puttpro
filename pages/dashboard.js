@@ -1,10 +1,8 @@
-import { useContext } from 'react';
 import { connectToDatabase } from '../utils/mongodb';
-import { Heading, Flex, Text, Button, Code } from '@chakra-ui/react';
-import { store } from '../components/context/GlobalProvider';
+import { Heading, Flex, Text, Stack, Box, Code } from '@chakra-ui/react';
+import { Stats } from '../components/PuttLogger';
 
 const Dashboard = (props) => {
-  const { state } = useContext(store);
   return (
     <Flex
       maxWidth="450"
@@ -24,6 +22,17 @@ const Dashboard = (props) => {
 };
 
 export default Dashboard;
+
+const PuttLogCards = (props) => (
+  <Stack spacing="8">
+    {props.puttLogs &&
+      props.puttLogs.map((o, i) => (
+        <Box boxShadow="md" p="8" borderRadius="8">
+          <Stats c1Stats={o.c1Stats} c2Stats={o.c2Stats} notes={o.notes} />
+        </Box>
+      ))}
+  </Stack>
+);
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();

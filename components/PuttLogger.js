@@ -34,6 +34,7 @@ export default function PuttLogger(props) {
   const { dispatch } = useContext(store);
   const [distance, setDistance] = useState(15);
   const [makes, setMakes] = useState(0);
+
   const [puttLog, setPuttLog] = useState([]);
   const [notes, setNotes] = useState('');
   const [c1Stats, setC1Stats] = useState({
@@ -93,24 +94,45 @@ export default function PuttLogger(props) {
 
   function logPutts() {
     const newPuttLog = {
-      distance: `${distance}ft`,
-      makes: `${makes}/10`,
+      distance,
+      makes: parseFloat(makes),
+      attempts: 10,
     };
     setPuttLog([...puttLog, newPuttLog]);
     setMakes(0);
     setCircleStats(distance, makes);
   }
 
+  const postData = async (data) => {
+    try {
+      const res = await fetch('/api/logs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      // Throw error with status code in case Fetch API req failed
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('failed');
+    }
+  };
+
   function handleSubmit() {
-    const data = {
+    const newLog = {
       puttLog,
       notes,
       c1Stats,
       c2Stats,
     };
-    console.log(data);
-    dispatch({ type: ADD_ITEM, payload: data });
-    router.push('/dashboard');
+    console.log(newLog);
+    postData(newLog);
   }
 
   return (
@@ -255,8 +277,10 @@ const Log = ({ puttLog }) => (
         {puttLog.length ? (
           puttLog.map((o, i) => (
             <Tr key={i}>
-              <Td>{o.distance}</Td>
-              <Td isNumeric>{o.makes}</Td>
+              <Td>{o.distance}ft</Td>
+              <Td isNumeric>
+                {o.makes}/{o.attempts}
+              </Td>
             </Tr>
           ))
         ) : (
@@ -309,3 +333,5 @@ const Notes = ({ notes, handleInputChange }) => {
     </Box>
   );
 };
+
+export { Stats };
