@@ -9,7 +9,6 @@ const Dashboard = () => {
       maxWidth="450"
       margin="0 auto"
       direction="column"
-      minHeight="400"
       justifyContent="center"
       textAlign="center"
       mt="8"
