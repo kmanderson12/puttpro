@@ -15,6 +15,7 @@ const Dashboard = (props) => {
       mt="8"
     >
       <Heading>Dashboard</Heading>
+      <Text mt="4">Test data from MongoDB:</Text>
       <Code p="4" m="4" borderRadius="8" textAlign="left">
         {JSON.stringify(props.puttLogs, null, 4)}
       </Code>
