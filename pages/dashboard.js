@@ -18,13 +18,14 @@ import {
   Th,
   Td,
 } from '@chakra-ui/react';
+
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 
-const Dashboard = (props) => {
-  TimeAgo.addLocale(en);
-  const timeAgo = new TimeAgo('en-US');
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo('en-US');
 
+const Dashboard = (props) => {
   return (
     <Flex
       margin="0 auto"
@@ -34,7 +35,7 @@ const Dashboard = (props) => {
       mt="8"
     >
       <Heading>Dashboard</Heading>
-      <LogList puttLogs={props.puttLogs} timeAgo={timeAgo} />
+      <LogList puttLogs={props.puttLogs} />
     </Flex>
   );
 };
@@ -64,7 +65,7 @@ const PuttLogCards = (props) => (
   </Stack>
 );
 
-const LogList = ({ puttLogs, timeAgo }) => {
+const LogList = ({ puttLogs }) => {
   return (
     <Box maxHeight="500" minW="300" overflow="auto" marginBottom="10">
       <Table variant="simple" my="8">
