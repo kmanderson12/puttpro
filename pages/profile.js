@@ -1,4 +1,5 @@
-import { Heading, Flex, Text, Stack, Box, Code } from '@chakra-ui/react';
+import NextLink from 'next/link';
+import { Heading, Flex, Text, Button, Box, Code } from '@chakra-ui/react';
 
 const Profile = (props) => {
   return (
@@ -10,7 +11,12 @@ const Profile = (props) => {
       textAlign="center"
       mt="8"
     >
-      <Heading>Profile Coming Soon</Heading>
+      <Heading mb={8}>Profile Coming Soon</Heading>
+      <Box>
+        <NextLink href="/new">
+          <Button colorScheme="blue">Go To Demo</Button>
+        </NextLink>
+      </Box>
     </Flex>
   );
 };
