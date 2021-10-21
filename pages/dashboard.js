@@ -18,9 +18,13 @@ import {
   Th,
   Td,
 } from '@chakra-ui/react';
-import { Stats } from '../components/PuttLogger';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en.json';
 
 const Dashboard = (props) => {
+  TimeAgo.addLocale(en);
+  const timeAgo = new TimeAgo('en-US');
+
   return (
     <Flex
       margin="0 auto"
@@ -30,7 +34,7 @@ const Dashboard = (props) => {
       mt="8"
     >
       <Heading>Dashboard</Heading>
-      <LogList puttLogs={props.puttLogs} />
+      <LogList puttLogs={props.puttLogs} timeAgo={timeAgo} />
     </Flex>
   );
 };
@@ -60,50 +64,54 @@ const PuttLogCards = (props) => (
   </Stack>
 );
 
-const LogList = (props) => (
-  <Box maxHeight="500" minW="300" overflow="auto" marginBottom="10">
-    <Table variant="simple" my="8">
-      <Thead>
-        <Tr>
-          <Th>Date</Th>
-          <Th textAlign="center">C1</Th>
-          <Th textAlign="center">C2</Th>
-          <Th>Notes</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {props.puttLogs ? (
-          props.puttLogs.map((o, i) => (
-            <Tr key={i}>
-              <Td fontSize="sm">{o?.date}</Td>
-              <Td textAlign="center">
-                <CircularProgress value={o.c1Stats.percent}>
-                  <CircularProgressLabel>
-                    {o.c1Stats.percent}%
-                  </CircularProgressLabel>
-                </CircularProgress>
-              </Td>
-              <Td textAlign="center">
-                <CircularProgress value={o.c2Stats.percent}>
-                  <CircularProgressLabel>
-                    {o.c2Stats.percent}%
-                  </CircularProgressLabel>
-                </CircularProgress>
-              </Td>
-              <Td fontSize="sm" maxWidth="200px">
-                {o.notes}
-              </Td>
-            </Tr>
-          ))
-        ) : (
-          <Tr textAlign="center">
-            <Td width="100%">No putts logged yet.</Td>
+const LogList = ({ puttLogs, timeAgo }) => {
+  return (
+    <Box maxHeight="500" minW="300" overflow="auto" marginBottom="10">
+      <Table variant="simple" my="8">
+        <Thead>
+          <Tr>
+            <Th>Date</Th>
+            <Th textAlign="center">C1</Th>
+            <Th textAlign="center">C2</Th>
+            <Th>Notes</Th>
           </Tr>
-        )}
-      </Tbody>
-    </Table>
-  </Box>
-);
+        </Thead>
+        <Tbody>
+          {puttLogs ? (
+            puttLogs.map((o, i) => {
+              return (
+                <Tr key={i}>
+                  <Td fontSize="sm">{timeAgo.format(new Date(o.date))}</Td>
+                  <Td textAlign="center">
+                    <CircularProgress value={o.c1Stats.percent}>
+                      <CircularProgressLabel>
+                        {o.c1Stats.percent}%
+                      </CircularProgressLabel>
+                    </CircularProgress>
+                  </Td>
+                  <Td textAlign="center">
+                    <CircularProgress value={o.c2Stats.percent}>
+                      <CircularProgressLabel>
+                        {o.c2Stats.percent}%
+                      </CircularProgressLabel>
+                    </CircularProgress>
+                  </Td>
+                  <Td fontSize="sm" maxWidth="200px">
+                    {o.notes}
+                  </Td>
+                </Tr>
+              );
+            })
+          ) : (
+            <Tr textAlign="center">
+              <Td width="100%">No putts logged yet.</Td>
+            </Tr>
+          )}
+        </Tbody>
+      </Table>
+    </Box>
+  );
+};
 
 const DataDump = (props) => (
   <>
@@ -116,7 +124,11 @@ const DataDump = (props) => (
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
-  const puttLogs = await db.collection('putt_logs').find({}).toArray();
+  const puttLogs = await db
+    .collection('putt_logs')
+    .find({})
+    .sort({ date: -1 })
+    .toArray();
   return {
     props: {
       puttLogs: JSON.parse(JSON.stringify(puttLogs)),

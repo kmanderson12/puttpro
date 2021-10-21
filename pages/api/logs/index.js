@@ -2,13 +2,15 @@ import { connectToDatabase } from '../../../utils/mongodb';
 
 export default async (req, res) => {
   const { db } = await connectToDatabase();
-  const puttLogs = await db.collection('putt_logs').find({}).toArray();
-  res.json(puttLogs);
 
   switch (req.method) {
     case 'GET':
       try {
-        const puttLogs = await db.collection('putt_logs').find({}).toArray();
+        const puttLogs = await db
+          .collection('putt_logs')
+          .find({})
+          .sort({ date: -1 })
+          .toArray();
         res.status(200).json({ success: true, data: puttLogs });
       } catch (error) {
         res.status(400).json({ success: false });

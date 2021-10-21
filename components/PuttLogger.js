@@ -123,15 +123,14 @@ export default function PuttLogger(props) {
   };
 
   function handleSubmit() {
-    const date = new Date(Date.now());
+    const date = new Date().toISOString();
     const newLog = {
-      date: date.toLocaleDateString('en-US'),
+      date,
       puttLog,
       notes,
       c1Stats,
       c2Stats,
     };
-    console.log(newLog);
     postData(newLog);
   }
 
