@@ -1,3 +1,6 @@
+import { useQuery } from 'react-query';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en.json';
 import {
   Heading,
   Flex,
@@ -11,16 +14,11 @@ import {
   Table,
   Thead,
   Tbody,
-  TableCaption,
-  Tfoot,
   Tr,
   Th,
   Td,
   Spinner,
 } from '@chakra-ui/react';
-import { useQuery } from 'react-query';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en.json';
 
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -65,7 +63,7 @@ const PuttLogCards = (props) => (
   </Stack>
 );
 
-const LogList = ({ puttLogs }) => {
+const LogList = (props) => {
   const { isLoading, error, data, isFetching } = useQuery('puttLogs', () =>
     fetch('/api/logs').then((res) => res.json())
   );

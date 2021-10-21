@@ -1,5 +1,6 @@
-import { useState, useContext } from 'react';
-import router, { useRouter } from 'next/router';
+import { useState } from 'react';
+import router from 'next/router';
+import { useMutation, useQueryClient } from 'react-query';
 import {
   Button,
   Box,
@@ -33,7 +34,6 @@ import Disc from './icons/Disc';
 export default function PuttLogger(props) {
   const [distance, setDistance] = useState(15);
   const [makes, setMakes] = useState(0);
-
   const [puttLog, setPuttLog] = useState([]);
   const [notes, setNotes] = useState('');
   const [c1Stats, setC1Stats] = useState({
@@ -102,25 +102,23 @@ export default function PuttLogger(props) {
     setCircleStats(distance, makes);
   }
 
-  const postData = async (data) => {
-    try {
-      const res = await fetch('/api/logs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        throw new Error(res.status);
-      }
-
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('failed');
-    }
+  const newLogMutation = (data) => {
+    return fetch('/api/logs', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
   };
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(newLogMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('puttLogs');
+    },
+  });
 
   function handleSubmit() {
     const date = new Date().toISOString();
@@ -131,7 +129,8 @@ export default function PuttLogger(props) {
       c1Stats,
       c2Stats,
     };
-    postData(newLog);
+    mutation.mutate(newLog);
+    router.push('/dashboard');
   }
 
   return (
@@ -159,7 +158,14 @@ export default function PuttLogger(props) {
       <Log puttLog={puttLog} />
       <Stats c1Stats={c1Stats} c2Stats={c2Stats} />
       <Notes notes={notes} handleInputChange={handleNotesChange} />
-      <Button onClick={handleSubmit}>Finish Session</Button>
+      <Button
+        colorScheme="blue"
+        isLoading={mutation.isLoading}
+        disabled={puttLog.length === 0}
+        onClick={handleSubmit}
+      >
+        Finish Session
+      </Button>
     </Flex>
   );
 }
