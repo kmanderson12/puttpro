@@ -14,7 +14,7 @@ const Login = (props) => {
       <Heading mb={8}>Login Coming Soon</Heading>
       <Box>
         <NextLink href="/new">
-          <Button colorScheme="blue">Go To Demo</Button>
+          <Button colorScheme="blue">View the Demo</Button>
         </NextLink>
       </Box>
     </Flex>
