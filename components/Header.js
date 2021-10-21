@@ -30,7 +30,7 @@ const Header = () => {
           <Link mx={{ base: '2', md: '6' }}>Dashboard</Link>
         </NextLink>
         <NextLink href="/new">
-          <Link mx={{ base: '2', md: '6' }}>New</Link>
+          <Link mx={{ base: '2', md: '6' }}>Demo</Link>
         </NextLink>
         <NextLink href="/profile">
           <Link ml={{ base: '2', md: '6' }}>
