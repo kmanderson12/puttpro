@@ -75,7 +75,7 @@ const LogList = (props) => (
         {props.puttLogs ? (
           props.puttLogs.map((o, i) => (
             <Tr key={i}>
-              <Td>{o?.date}</Td>
+              <Td fontSize="sm">{o?.date}</Td>
               <Td textAlign="center">
                 <CircularProgress value={o.c1Stats.percent}>
                   <CircularProgressLabel>
