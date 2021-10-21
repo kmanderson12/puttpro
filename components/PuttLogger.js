@@ -152,7 +152,7 @@ export default function PuttLogger(props) {
         maxDistance={maxDistance}
       />
       <Attempts makes={makes} handleChange={handleAttemptsChange} />
-      <Button disabled={makes === 0} onClick={logPutts}>
+      <Button size="lg" disabled={makes === 0} onClick={logPutts}>
         Log Putts
       </Button>
       <Log puttLog={puttLog} />
@@ -160,6 +160,7 @@ export default function PuttLogger(props) {
       <Notes notes={notes} handleInputChange={handleNotesChange} />
       <Button
         colorScheme="blue"
+        size="lg"
         isLoading={mutation.isLoading}
         disabled={puttLog.length === 0}
         onClick={handleSubmit}
