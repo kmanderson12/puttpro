@@ -11,9 +11,9 @@ export default async (req, res) => {
           .find({})
           .sort({ date: -1 })
           .toArray();
-        res.status(200).json({ success: true, data: puttLogs });
+        res.status(200).json(puttLogs);
       } catch (error) {
-        res.status(400).json({ success: false });
+        res.status(400).json(error);
       }
       break;
     case 'POST':

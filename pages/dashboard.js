@@ -18,7 +18,7 @@ import {
   Th,
   Td,
 } from '@chakra-ui/react';
-
+import { useQuery } from 'react-query';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 
@@ -66,6 +66,14 @@ const PuttLogCards = (props) => (
 );
 
 const LogList = ({ puttLogs }) => {
+  const { isLoading, error, data, isFetching } = useQuery('puttLogs', () =>
+    fetch('/api/logs').then((res) => res.json())
+  );
+
+  if (isLoading) return 'Loading...';
+
+  if (error) return 'An error has occurred: ' + error.message;
+
   return (
     <Box maxHeight="500" minW="300" overflow="auto" marginBottom="10">
       <Table variant="simple" my="8">
@@ -78,36 +86,30 @@ const LogList = ({ puttLogs }) => {
           </Tr>
         </Thead>
         <Tbody>
-          {puttLogs ? (
-            puttLogs.map((o, i) => {
-              return (
-                <Tr key={i}>
-                  <Td fontSize="sm">{timeAgo.format(new Date(o.date))}</Td>
-                  <Td textAlign="center">
-                    <CircularProgress value={o.c1Stats.percent}>
-                      <CircularProgressLabel>
-                        {o.c1Stats.percent}%
-                      </CircularProgressLabel>
-                    </CircularProgress>
-                  </Td>
-                  <Td textAlign="center">
-                    <CircularProgress value={o.c2Stats.percent}>
-                      <CircularProgressLabel>
-                        {o.c2Stats.percent}%
-                      </CircularProgressLabel>
-                    </CircularProgress>
-                  </Td>
-                  <Td fontSize="sm" maxWidth="200px">
-                    {o.notes}
-                  </Td>
-                </Tr>
-              );
-            })
-          ) : (
-            <Tr textAlign="center">
-              <Td width="100%">No putts logged yet.</Td>
-            </Tr>
-          )}
+          {data.map((o, i) => {
+            return (
+              <Tr key={i}>
+                <Td fontSize="sm">{timeAgo.format(new Date(o.date))}</Td>
+                <Td textAlign="center">
+                  <CircularProgress value={o.c1Stats.percent}>
+                    <CircularProgressLabel>
+                      {o.c1Stats.percent}%
+                    </CircularProgressLabel>
+                  </CircularProgress>
+                </Td>
+                <Td textAlign="center">
+                  <CircularProgress value={o.c2Stats.percent}>
+                    <CircularProgressLabel>
+                      {o.c2Stats.percent}%
+                    </CircularProgressLabel>
+                  </CircularProgress>
+                </Td>
+                <Td fontSize="sm" maxWidth="200px">
+                  {o.notes}
+                </Td>
+              </Tr>
+            );
+          })}
         </Tbody>
       </Table>
     </Box>
