@@ -1,4 +1,3 @@
-import { connectToDatabase } from '../utils/mongodb';
 import {
   Heading,
   Flex,
@@ -17,6 +16,7 @@ import {
   Tr,
   Th,
   Td,
+  Spinner,
 } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import TimeAgo from 'javascript-time-ago';
@@ -35,7 +35,7 @@ const Dashboard = (props) => {
       mt="8"
     >
       <Heading>Dashboard</Heading>
-      <LogList puttLogs={props.puttLogs} />
+      <LogList />
     </Flex>
   );
 };
@@ -70,7 +70,7 @@ const LogList = ({ puttLogs }) => {
     fetch('/api/logs').then((res) => res.json())
   );
 
-  if (isLoading) return 'Loading...';
+  if (isLoading) return <Spinner margin="20px auto" size="xl" />;
 
   if (error) return 'An error has occurred: ' + error.message;
 
@@ -124,17 +124,3 @@ const DataDump = (props) => (
     </Code>
   </>
 );
-
-export async function getServerSideProps() {
-  const { db } = await connectToDatabase();
-  const puttLogs = await db
-    .collection('putt_logs')
-    .find({})
-    .sort({ date: -1 })
-    .toArray();
-  return {
-    props: {
-      puttLogs: JSON.parse(JSON.stringify(puttLogs)),
-    },
-  };
-}
