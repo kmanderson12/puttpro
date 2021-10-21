@@ -77,7 +77,7 @@ const LogList = (props) => {
       <Table variant="simple" my="8">
         <Thead>
           <Tr>
-            <Th>Date</Th>
+            <Th>Completed</Th>
             <Th textAlign="center">C1</Th>
             <Th textAlign="center">C2</Th>
             <Th>Notes</Th>
@@ -102,7 +102,7 @@ const LogList = (props) => {
                     </CircularProgressLabel>
                   </CircularProgress>
                 </Td>
-                <Td fontSize="sm" maxWidth="200px">
+                <Td fontSize="sm" minWidth="150px" maxWidth="200px">
                   {o.notes}
                 </Td>
               </Tr>
