@@ -73,7 +73,7 @@ const LogList = (props) => {
   if (error) return 'An error has occurred: ' + error.message;
 
   return (
-    <Box maxHeight="500" minW="300" overflow="auto" marginBottom="10">
+    <Box minW="300" overflow="auto" marginBottom="10">
       <Table variant="simple" my="8">
         <Thead>
           <Tr>
