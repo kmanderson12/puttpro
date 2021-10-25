@@ -1,40 +1,19 @@
 import { useState } from 'react';
 import router from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
-import {
-  Button,
-  Box,
-  Progress,
-  CircularProgress,
-  CircularProgressLabel,
-  Text,
-  Heading,
-  SimpleGrid,
-  Flex,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  Table,
-  Thead,
-  Tbody,
-  TableCaption,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  Textarea,
-} from '@chakra-ui/react';
+import { Button, Box, Text, Heading, Flex, Textarea } from '@chakra-ui/react';
 import {
   calculateMakes,
   calculateAttempts,
   calculatePercent,
 } from '../utils/calcFunctions';
-import Disc from './icons/Disc';
-import next from 'next';
+import DistanceSlider from './DistanceSlider';
+import CircleStats from './CircleStats';
+import AttemptsGrid from './AttemptsGrid';
+import LogTable from './LogTable';
 
 export default function PuttLogger(props) {
-  // TODO: Clean up state. Create a total object.
+  // TODO: Clean up state. Refactor functions.
   const [distance, setDistance] = useState(15);
   const [makes, setMakes] = useState(0);
   const [puttLog, setPuttLog] = useState([]);
@@ -147,7 +126,7 @@ export default function PuttLogger(props) {
       maxW="400"
     >
       <Heading mb="8">New Putt Log</Heading>
-      <Distance
+      <DistanceSlider
         value={distance}
         increment={increment}
         decrement={decrement}
@@ -155,12 +134,12 @@ export default function PuttLogger(props) {
         minDistance={minDistance}
         maxDistance={maxDistance}
       />
-      <Attempts makes={makes} handleChange={handleAttemptsChange} />
+      <AttemptsGrid makes={makes} handleChange={handleAttemptsChange} />
       <Button size="lg" disabled={makes === 0} onClick={logPutts} mb="8">
         Log Putts
       </Button>
-      <Stats c1Stats={c1Stats} c2Stats={c2Stats} puttLog={puttLog} />
-      <Log puttLog={puttLog} />
+      <CircleStats c1Stats={c1Stats} c2Stats={c2Stats} puttLog={puttLog} />
+      <LogTable puttLog={puttLog} />
       <Notes notes={notes} handleInputChange={handleNotesChange} />
       <Button
         colorScheme="blue"
@@ -174,295 +153,6 @@ export default function PuttLogger(props) {
     </Flex>
   );
 }
-
-const Distance = ({
-  value,
-  increment,
-  decrement,
-  setValue,
-  minDistance,
-  maxDistance,
-}) => {
-  return (
-    <Flex direction="column" align="center">
-      <Text
-        fontSize="sm"
-        fontWeight="semibold"
-        color="gray.700"
-        textTransform="uppercase"
-      >
-        Distance
-      </Text>
-      <Text fontSize="3xl" margin="2">
-        {value}ft
-      </Text>
-      <Flex>
-        <Button onClick={decrement}>-</Button>
-        <Slider
-          aria-label="slider-ex-5"
-          value={value}
-          onChange={(val) => setValue(val)}
-          min={minDistance}
-          max={maxDistance}
-          mx={2}
-          minW={200}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb boxSize={6}>
-            <Box as={Disc} />
-          </SliderThumb>
-        </Slider>
-        <Button onClick={increment}>+</Button>
-      </Flex>
-    </Flex>
-  );
-};
-
-const Attempts = ({ makes, handleChange }) => {
-  const attemptsArray = [...Array(10).keys()].map((i) => (i = i + 1));
-
-  return (
-    <Flex direction="column" align="center" my={8}>
-      <Text
-        fontSize="sm"
-        color="gray.700"
-        fontWeight="semibold"
-        textTransform="uppercase"
-      >
-        Makes
-      </Text>
-      <Text fontSize="3xl" margin="2">
-        {makes}/10
-      </Text>
-      <SimpleGrid
-        columns="5"
-        rows="2"
-        gap="4"
-        bg="gray.100"
-        borderRadius="8"
-        width="100%"
-        p="2"
-        my="4"
-      >
-        {attemptsArray.map((n, i) => (
-          <Button
-            key={n}
-            data-number={n}
-            bg={n <= makes ? 'green.200' : 'white'}
-            borderRadius="4"
-            onClick={handleChange}
-            color={n <= makes ? 'green.700' : 'gray.500'}
-            _hover={{
-              background: `${n <= makes ? 'green.200' : 'white'}`,
-            }}
-          >
-            {n}
-          </Button>
-        ))}
-      </SimpleGrid>
-    </Flex>
-  );
-};
-
-const Log = ({ puttLog }) => (
-  <Box maxHeight="350" minW="300" overflow="auto" marginBottom="10">
-    <Text
-      fontSize="sm"
-      fontWeight="semibold"
-      color="gray.700"
-      textTransform="uppercase"
-      textAlign="center"
-    >
-      Log
-    </Text>
-    <Table variant="simple" my="8">
-      <Thead position="sticky" top="0" background="white">
-        <Tr>
-          <Th>Distance</Th>
-          <Th isNumeric>Makes</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {puttLog.length ? (
-          puttLog.map((o, i) => (
-            <Tr key={i}>
-              <Td>{o.distance}ft</Td>
-              <Td isNumeric>
-                {o.makes}/{o.attempts}
-              </Td>
-            </Tr>
-          ))
-        ) : (
-          <Tr textAlign="center">
-            <Td width="100%">No putts logged yet.</Td>
-          </Tr>
-        )}
-      </Tbody>
-    </Table>
-  </Box>
-);
-
-const Stats = ({ c1Stats, c2Stats, puttLog }) => {
-  const c1Short = puttLog.filter((i) => i.distance <= 11);
-  const c1Medium = puttLog.filter((i) => i.distance <= 22 && i.distance > 11);
-  const c1Long = puttLog.filter((i) => i.distance <= 33 && i.distance > 22);
-
-  const c2Short = puttLog.filter((i) => i.distance <= 44 && i.distance > 33);
-  const c2Medium = puttLog.filter((i) => i.distance <= 55 && i.distance > 44);
-  const c2Long = puttLog.filter((i) => i.distance <= 66 && i.distance > 55);
-
-  function calculateRangeStats(obj) {
-    const totalMakes = obj.reduce((total, next) => total + next.makes, 0);
-    const totalAttempts = obj.reduce((total, next) => total + next.attempts, 0);
-    return {
-      totalMakes,
-      totalAttempts,
-    };
-  }
-
-  const c1ShortStats = calculateRangeStats(c1Short);
-  const c1MediumStats = calculateRangeStats(c1Medium);
-  const c1LongStats = calculateRangeStats(c1Long);
-
-  const c2ShortStats = calculateRangeStats(c2Short);
-  const c2MediumStats = calculateRangeStats(c2Medium);
-  const c2LongStats = calculateRangeStats(c2Long);
-
-  return (
-    <Flex direction="column" align="center">
-      <Flex direction="column" mx={4} minWidth="300px" my={8}>
-        <Text
-          fontSize="sm"
-          color="gray.700"
-          fontWeight="semibold"
-          textTransform="uppercase"
-          textAlign="center"
-        >
-          C1 Stats
-        </Text>
-        <Flex align="center" marginY="4">
-          <Box>
-            <CircularProgress value={c1Stats.percent} size="120">
-              <CircularProgressLabel>{c1Stats.percent}%</CircularProgressLabel>
-            </CircularProgress>
-          </Box>
-          <Flex direction="column" marginLeft="20px">
-            <Flex minW="200px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Short
-              </Text>
-              <Text>
-                {c1ShortStats.totalMakes}/{c1ShortStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c1ShortStats.totalMakes / c1ShortStats.totalAttempts) * 100 ||
-                0
-              }
-            />
-            <Flex minW="150px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Medium
-              </Text>
-              <Text>
-                {c1MediumStats.totalMakes}/{c1MediumStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c1MediumStats.totalMakes / c1MediumStats.totalAttempts) *
-                  100 || 0
-              }
-            />
-            <Flex minW="150px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Long
-              </Text>
-              <Text>
-                {c1LongStats.totalMakes}/{c1LongStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c1LongStats.totalMakes / c1LongStats.totalAttempts) * 100 || 0
-              }
-            />
-          </Flex>
-        </Flex>
-      </Flex>
-      <Flex direction="column" mx={4} minWidth="300px" my={8}>
-        <Text
-          fontSize="sm"
-          color="gray.700"
-          fontWeight="semibold"
-          textTransform="uppercase"
-          textAlign="center"
-        >
-          C2 Stats
-        </Text>
-        <Flex align="center" marginY="4">
-          <Box>
-            <CircularProgress value={c2Stats.percent} size="120">
-              <CircularProgressLabel>{c2Stats.percent}%</CircularProgressLabel>
-            </CircularProgress>
-          </Box>
-          <Flex direction="column" marginLeft="20px">
-            <Flex minW="200px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Short
-              </Text>
-              <Text>
-                {c2ShortStats.totalMakes}/{c2ShortStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c2ShortStats.totalMakes / c2ShortStats.totalAttempts) * 100 ||
-                0
-              }
-            />
-            <Flex minW="150px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Medium
-              </Text>
-              <Text>
-                {c2MediumStats.totalMakes}/{c2MediumStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c2MediumStats.totalMakes / c2MediumStats.totalAttempts) *
-                  100 || 0
-              }
-            />
-            <Flex minW="150px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Long
-              </Text>
-              <Text>
-                {c2LongStats.totalMakes}/{c2LongStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c2LongStats.totalMakes / c2LongStats.totalAttempts) * 100 || 0
-              }
-            />
-          </Flex>
-        </Flex>
-      </Flex>
-    </Flex>
-  );
-};
 
 const Notes = ({ notes, handleInputChange }) => {
   return (
@@ -487,5 +177,3 @@ const Notes = ({ notes, handleInputChange }) => {
     </Box>
   );
 };
-
-export { Stats };
