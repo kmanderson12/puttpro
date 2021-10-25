@@ -71,7 +71,8 @@ export default function PuttLogger(props) {
   }
 
   function decrement() {
-    let newValue = distance - 5 <= 5 ? 5 : roundByFive(distance - 5);
+    let newValue =
+      distance - 5 < minDistance ? minDistance : roundByFive(distance - 5);
     setDistance(newValue);
   }
 
