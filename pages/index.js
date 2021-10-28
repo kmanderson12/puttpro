@@ -20,11 +20,11 @@ const Index = () => (
       progress over time.
     </Text>
     <Flex>
-      <NextLink href="/login">
+      <a href="/api/auth/login">
         <Button size="lg" m="4">
           Log In
         </Button>
-      </NextLink>
+      </a>
       <NextLink href="/new">
         <Button colorScheme="blue" size="lg" m="4">
           Demo
