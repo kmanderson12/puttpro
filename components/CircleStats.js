@@ -7,7 +7,7 @@ import {
   Flex,
 } from '@chakra-ui/react';
 
-const CircleStats = ({ c1Stats, c2Stats, puttLog }) => {
+const CircleStats = ({ c1Stats, c2Stats, puttLog, flexDir = 'column' }) => {
   const c1Short = puttLog.filter((i) => i.distance <= 11);
   const c1Medium = puttLog.filter((i) => i.distance <= 22 && i.distance > 11);
   const c1Long = puttLog.filter((i) => i.distance <= 33 && i.distance > 22);
@@ -17,8 +17,14 @@ const CircleStats = ({ c1Stats, c2Stats, puttLog }) => {
   const c2Long = puttLog.filter((i) => i.distance <= 66 && i.distance > 55);
 
   function calculateRangeStats(obj) {
-    const totalMakes = obj.reduce((total, next) => total + next.makes, 0);
-    const totalAttempts = obj.reduce((total, next) => total + next.attempts, 0);
+    const totalMakes = obj.reduce(
+      (total, next) => total + parseFloat(next.makes),
+      0
+    );
+    const totalAttempts = obj.reduce(
+      (total, next) => total + parseFloat(next.attempts),
+      0
+    );
     return {
       totalMakes,
       totalAttempts,
@@ -34,8 +40,8 @@ const CircleStats = ({ c1Stats, c2Stats, puttLog }) => {
   const c2LongStats = calculateRangeStats(c2Long);
 
   return (
-    <Flex direction="column" align="center">
-      <Flex direction="column" mx={4} minWidth="300px" my={8}>
+    <Flex direction={flexDir} align="center">
+      <Flex direction="column" minWidth="300px" my={8}>
         <Text
           fontSize="sm"
           color="gray.700"
@@ -45,7 +51,7 @@ const CircleStats = ({ c1Stats, c2Stats, puttLog }) => {
         >
           C1 Stats
         </Text>
-        <Flex align="center" marginY="4">
+        <Flex align="center" marginTop="8" marginBottom="4">
           <Box>
             <CircularProgress value={c1Stats.percent} size="120">
               <CircularProgressLabel>{c1Stats.percent}%</CircularProgressLabel>
@@ -99,7 +105,7 @@ const CircleStats = ({ c1Stats, c2Stats, puttLog }) => {
           </Flex>
         </Flex>
       </Flex>
-      <Flex direction="column" mx={4} minWidth="300px" my={8}>
+      <Flex direction="column" minWidth="300px" my={8}>
         <Text
           fontSize="sm"
           color="gray.700"
@@ -109,7 +115,7 @@ const CircleStats = ({ c1Stats, c2Stats, puttLog }) => {
         >
           C2 Stats
         </Text>
-        <Flex align="center" marginY="4">
+        <Flex align="center" marginTop="8" marginBottom="4">
           <Box>
             <CircularProgress value={c2Stats.percent} size="120">
               <CircularProgressLabel>{c2Stats.percent}%</CircularProgressLabel>
