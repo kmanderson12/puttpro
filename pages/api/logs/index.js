@@ -1,7 +1,7 @@
-import { connectToDatabase } from '../../../utils/mongodb';
+import clientPromise from 'utils/mongodb.js';
 
 export default async (req, res) => {
-  const { db } = await connectToDatabase();
+  const db = (await clientPromise).db(process.env.MONGODB_DB);
 
   switch (req.method) {
     case 'GET':

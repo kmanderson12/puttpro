@@ -1,4 +1,5 @@
 import NextLink from 'next/link';
+import { getSession } from 'next-auth/react';
 import { Heading, Flex, Text, Button, Box, Code } from '@chakra-ui/react';
 
 const Profile = (props) => {
@@ -20,5 +21,22 @@ const Profile = (props) => {
     </Flex>
   );
 };
+
+export async function getServerSideProps(context) {
+  const session = await getSession({ req: context.req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
 
 export default Profile;

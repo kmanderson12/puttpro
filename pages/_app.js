@@ -1,6 +1,7 @@
 import App from 'next/app';
 import React from 'react';
 import Page from '../components/Page';
+import { SessionProvider } from 'next-auth/react';
 import { GlobalProvider } from '../components/context/GlobalProvider';
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
@@ -14,11 +15,13 @@ export default class MyApp extends App {
     return (
       <GlobalProvider>
         <QueryClientProvider client={queryClient}>
-          <ChakraProvider>
-            <Page>
-              <Component {...pageProps} />
-            </Page>
-          </ChakraProvider>
+          <SessionProvider session={pageProps.session} refetchInterval>
+            <ChakraProvider>
+              <Page>
+                <Component {...pageProps} />
+              </Page>
+            </ChakraProvider>
+          </SessionProvider>
         </QueryClientProvider>
       </GlobalProvider>
     );
