@@ -15,7 +15,7 @@ export default class MyApp extends App {
     return (
       <GlobalProvider>
         <QueryClientProvider client={queryClient}>
-          <SessionProvider session={pageProps.session} refetchInterval>
+          <SessionProvider session={pageProps.session} refetchInterval={5 * 60}>
             <ChakraProvider>
               <Page>
                 <Component {...pageProps} />

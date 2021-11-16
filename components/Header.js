@@ -1,15 +1,9 @@
 import NextLink from 'next/link';
-import {
-  Avatar,
-  Flex,
-  Box,
-  Heading,
-  Text,
-  Link,
-  useToast,
-} from '@chakra-ui/react';
+import { useSession, signOut } from 'next-auth/react';
+import { Avatar, Flex, Heading, Link, Button } from '@chakra-ui/react';
 
 const Header = () => {
+  const { data: session, status } = useSession();
   return (
     <Flex
       as="header"
@@ -26,20 +20,33 @@ const Header = () => {
         </Link>
       </NextLink>
       <Flex align="center">
-        <NextLink href="/dashboard">
-          <Link mx={{ base: '2', md: '6' }}>Dashboard</Link>
-        </NextLink>
-        <NextLink href="/new">
-          <Link mx={{ base: '2', md: '6' }}>Demo</Link>
-        </NextLink>
-        <NextLink href="/profile">
-          <Link ml={{ base: '2', md: '6' }}>
-            <Avatar bg="blue.500" />
-          </Link>
-        </NextLink>
-        {/* <NextLink href="#">
-        <Link mx={{ base: '2', md: '6' }}>Profile</Link>
-      </NextLink> */}
+        {!session && (
+          <>
+            <NextLink href="/new">
+              <Link mx={{ base: '2', md: '6' }}>Demo</Link>
+            </NextLink>
+            <NextLink href="/profile">
+              <Link ml={{ base: '2', md: '6' }}>
+                <Avatar bg="blue.500" />
+              </Link>
+            </NextLink>
+          </>
+        )}
+        {session && (
+          <>
+            <NextLink href="/dashboard">
+              <Link mx={{ base: '2', md: '6' }}>Dashboard</Link>
+            </NextLink>
+            <Button onClick={() => signOut()} mx={{ base: '2', md: '6' }}>
+              Sign Out
+            </Button>
+            <NextLink href="/profile">
+              <Link ml={{ base: '2', md: '6' }}>
+                <Avatar bg="blue.500" />
+              </Link>
+            </NextLink>
+          </>
+        )}
       </Flex>
     </Flex>
   );

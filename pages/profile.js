@@ -1,8 +1,27 @@
 import NextLink from 'next/link';
-import { getSession } from 'next-auth/react';
-import { Heading, Flex, Text, Button, Box, Code } from '@chakra-ui/react';
+import { getSession, useSession } from 'next-auth/react';
+import {
+  Heading,
+  Flex,
+  Text,
+  Button,
+  Box,
+  Code,
+  Spinner,
+} from '@chakra-ui/react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+import DataDump from 'components/DataDump';
 
 const Profile = (props) => {
+  const { isLoading, error, data, isFetching } = useQuery('userData', () =>
+    fetch('/api/user').then((res) => res.json())
+  );
+
+  if (isLoading) return <Spinner margin="20px auto" size="xl" />;
+
+  if (error) return 'An error has occurred: ' + error.message;
+
   return (
     <Flex
       maxWidth="450"
@@ -17,6 +36,7 @@ const Profile = (props) => {
         <NextLink href="/new">
           <Button colorScheme="blue">View the Demo</Button>
         </NextLink>
+        <DataDump data={data} />
       </Box>
     </Flex>
   );
