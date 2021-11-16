@@ -1,15 +1,6 @@
 import NextLink from 'next/link';
-import { getSession, useSession } from 'next-auth/react';
-import {
-  Heading,
-  Flex,
-  Text,
-  Button,
-  Box,
-  Code,
-  Spinner,
-} from '@chakra-ui/react';
-import { useState } from 'react';
+import { getSession } from 'next-auth/react';
+import { Heading, Flex, Button, Box, Spinner } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import DataDump from 'components/DataDump';
 
