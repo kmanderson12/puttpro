@@ -34,7 +34,7 @@ const Index = () => {
             <Button size="lg" m="4" onClick={() => signIn()}>
               Log In
             </Button>
-            <NextLink href="/new">
+            <NextLink href="/demo/new">
               <Button colorScheme="blue" size="lg" m="4">
                 Demo
               </Button>

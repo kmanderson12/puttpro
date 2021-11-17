@@ -1,5 +1,5 @@
-import PuttLogger from 'components/PuttLogger';
+import DemoPuttLogger from 'components/DemoPuttLogger';
 
-const New = () => <PuttLogger />;
+const New = () => <DemoPuttLogger />;
 
 export default New;

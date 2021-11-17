@@ -48,7 +48,7 @@ const Header = () => {
       <Flex align="center">
         {!session && (
           <>
-            <NextLink href="/new">
+            <NextLink href="/demo/new">
               <Link mx={{ base: '2', md: '6' }}>Demo</Link>
             </NextLink>
             <NextLink href="/profile">

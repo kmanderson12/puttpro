@@ -13,31 +13,31 @@ const reducer = (state, action) => {
     case ADD_ITEM:
       return {
         ...state,
-        items: [...state.items, action.payload]
+        items: [...state.items, action.payload],
       };
     case UPDATE_ITEM:
       const updatedItems = updateObjectInArray(state.items, action);
       return {
         ...state,
-        items: updatedItems
+        items: updatedItems,
       };
     case DELETE_ITEM:
       return {
         ...state,
-        items: removeItem(state.items, action)
+        items: removeItem(state.items, action),
       };
     default:
       return state;
   }
 };
 
-const GlobalProvider = ({ children }) => {
+const DemoProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };
 
-export { store, GlobalProvider, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM };
+export { store, DemoProvider, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM };
 
 // Helper Functions
 function updateObjectInArray(array, action) {
@@ -47,7 +47,7 @@ function updateObjectInArray(array, action) {
     }
     return {
       ...item,
-      ...action.payload
+      ...action.payload,
     };
   });
 }

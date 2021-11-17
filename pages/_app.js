@@ -2,7 +2,7 @@ import App from 'next/app';
 import React from 'react';
 import Page from '../components/Page';
 import { SessionProvider } from 'next-auth/react';
-import { GlobalProvider } from '../components/context/GlobalProvider';
+import { DemoProvider } from '../components/context/DemoProvider';
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -13,7 +13,7 @@ export default class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <GlobalProvider>
+      <DemoProvider>
         <QueryClientProvider client={queryClient}>
           <SessionProvider session={pageProps.session} refetchInterval={5 * 60}>
             <ChakraProvider>
@@ -23,7 +23,7 @@ export default class MyApp extends App {
             </ChakraProvider>
           </SessionProvider>
         </QueryClientProvider>
-      </GlobalProvider>
+      </DemoProvider>
     );
   }
 }
