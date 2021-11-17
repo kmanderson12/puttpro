@@ -46,40 +46,19 @@ const Dashboard = (props) => {
       mt="8"
     >
       <Heading>Dashboard</Heading>
-      <NextLink href="/new">
-        <Button my="4" leftIcon={<AddIcon />}>
-          New Putt Log
-        </Button>
-      </NextLink>
+      {/* <Flex w="100%" justifyContent="flex-end">
+        <Box>
+          <NextLink href="/new">
+            <Button my="4" leftIcon={<AddIcon />}>
+              New Putt Log
+            </Button>
+          </NextLink>
+        </Box>
+      </Flex> */}
       <LogListGrid props={props} />
     </Flex>
   );
 };
-
-export default Dashboard;
-
-const PuttLogCards = (props) => (
-  <Stack spacing="8">
-    {props.puttLogs &&
-      props.puttLogs.map((o, i) => (
-        <Box boxShadow="md" p="8" borderRadius="8">
-          <Flex>
-            <VStack>
-              <Flex direction="column" align="center" mx={4}>
-                <Text>C1</Text>
-                <CircularProgress value={o.c1Stats.percent}>
-                  <CircularProgressLabel>
-                    {o.c1Stats.percent}%
-                  </CircularProgressLabel>
-                </CircularProgress>
-                {o.c1Stats.makes}/{o.c1Stats.attempts}
-              </Flex>
-            </VStack>
-          </Flex>
-        </Box>
-      ))}
-  </Stack>
-);
 
 const LogListGrid = (props) => {
   const { isLoading, error, data, isFetching } = useQuery('puttLogs', () =>
@@ -208,60 +187,6 @@ const LogListGrid = (props) => {
   );
 };
 
-const LogList = (props) => {
-  const { isLoading, error, data, isFetching } = useQuery('puttLogs', () =>
-    fetch(`/api/logs`).then((res) => res.json())
-  );
-
-  if (isLoading) return <Spinner margin="20px auto" size="xl" />;
-
-  if (error) return 'An error has occurred: ' + error.message;
-  return (
-    <Box minW="300" overflow="auto" marginBottom="10">
-      <Table variant="simple" my="8">
-        <Thead>
-          <Tr>
-            <Th></Th>
-            <Th>Completed</Th>
-            <Th textAlign="center">C1</Th>
-            <Th textAlign="center">C2</Th>
-            <Th>Notes</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.map((o, i) => {
-            return (
-              <Tr key={i}>
-                <Td>
-                  <Button size="xs">View</Button>
-                </Td>
-                <Td fontSize="sm">{timeAgo.format(new Date(o.date))}</Td>
-                <Td textAlign="center">
-                  <CircularProgress value={o.c1Stats.percent}>
-                    <CircularProgressLabel>
-                      {o.c1Stats.percent}%
-                    </CircularProgressLabel>
-                  </CircularProgress>
-                </Td>
-                <Td textAlign="center">
-                  <CircularProgress value={o.c2Stats.percent}>
-                    <CircularProgressLabel>
-                      {o.c2Stats.percent}%
-                    </CircularProgressLabel>
-                  </CircularProgress>
-                </Td>
-                <Td fontSize="sm" minWidth="150px" maxWidth="200px">
-                  {o.notes}
-                </Td>
-              </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
-    </Box>
-  );
-};
-
 export async function getServerSideProps(context) {
   const session = await getSession({ req: context.req });
 
@@ -278,3 +203,5 @@ export async function getServerSideProps(context) {
     props: { session },
   };
 }
+
+export default Dashboard;

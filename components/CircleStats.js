@@ -5,7 +5,7 @@ import {
   CircularProgressLabel,
   Text,
   Flex,
-  SimpleGrid,
+  Stack,
 } from '@chakra-ui/react';
 import { CIRCLE_RANGES, circleRange } from 'utils/constants';
 import { calculateRangeStats } from 'utils/calcFunctions';
@@ -60,12 +60,12 @@ const SingleCircle = ({ circleStats, puttLog, range }) => {
       >
         {range.name} Stats
       </Text>
-      <Flex
+      <Stack
+        direction={['column', 'row']}
+        spacing="10px"
         alignItems="center"
         marginTop="8"
         marginBottom="4"
-        flexWrap="wrap"
-        justifyContent="center"
       >
         <Box>
           <CircularProgress value={circleStats.percent} size="120">
@@ -97,7 +97,7 @@ const SingleCircle = ({ circleStats, puttLog, range }) => {
           </Flex>
           <Progress mb="4" value={long?.percent || 0} />
         </Flex>
-      </Flex>
+      </Stack>
     </Flex>
   );
 };
