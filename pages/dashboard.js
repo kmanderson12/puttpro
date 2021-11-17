@@ -8,6 +8,7 @@ import {
   Stack,
   VStack,
   Box,
+  Button,
   Code,
   CircularProgress,
   CircularProgressLabel,
@@ -19,6 +20,7 @@ import {
   Td,
   Spinner,
 } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 import { getSession } from 'next-auth/react';
 
 TimeAgo.addLocale(en);
@@ -29,11 +31,15 @@ const Dashboard = (props) => {
     <Flex
       margin="0 auto"
       direction="column"
+      alignItems="center"
       justifyContent="center"
       textAlign="center"
       mt="8"
     >
       <Heading>Dashboard</Heading>
+      <Button my="4" leftIcon={<AddIcon />}>
+        New Putt Log
+      </Button>
       <LogList props={props} />
     </Flex>
   );
@@ -113,15 +119,6 @@ const LogList = (props) => {
     </Box>
   );
 };
-
-const DataDump = (props) => (
-  <>
-    <Text mt="4">Test data from MongoDB:</Text>
-    <Code p="4" m="4" borderRadius="8" textAlign="left">
-      {JSON.stringify(props.puttLogs, null, 4)}
-    </Code>
-  </>
-);
 
 export async function getServerSideProps(context) {
   const session = await getSession({ req: context.req });
