@@ -4,6 +4,8 @@ import { useSession, signOut } from 'next-auth/react';
 import { useQuery } from 'react-query';
 import {
   Avatar,
+  Button,
+  Box,
   Flex,
   Heading,
   Link,
@@ -13,6 +15,7 @@ import {
   MenuList,
   MenuItem,
 } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 
 const Header = () => {
   const { data: session, status } = useSession();
@@ -22,9 +25,9 @@ const Header = () => {
 
   const router = useRouter();
 
-  const handleClick = (e) => {
+  const handleNewLogClick = (e) => {
     e.preventDefault();
-    router.push(href);
+    router.push('/new');
   };
 
   return (
@@ -57,7 +60,7 @@ const Header = () => {
         )}
         {session && (
           <>
-            <Menu>
+            <Menu autoSelect={false}>
               <MenuButton>
                 <Avatar
                   bg="blue.500"
@@ -68,6 +71,24 @@ const Header = () => {
                 />
               </MenuButton>
               <MenuList>
+                <MenuItem
+                  as={Box}
+                  w="100%"
+                  px="3"
+                  mt="1"
+                  mb="2"
+                  _hover={{ background: 'transparent' }}
+                >
+                  <Button
+                    w="100%"
+                    m="0 auto"
+                    leftIcon={<AddIcon />}
+                    display="flex"
+                    onClick={handleNewLogClick}
+                  >
+                    New Putt Log
+                  </Button>
+                </MenuItem>
                 <NextLink href="/profile">
                   <MenuItem>Profile</MenuItem>
                 </NextLink>

@@ -29,9 +29,14 @@ export default async (req, res) => {
       break;
     case 'POST':
       try {
-        const newLog = await db
-          .collection('putt_logs')
-          .insertOne(req.body); /* create a new model in the database */
+        const user = await db.collection('users').findOne({
+          email: session.user.email,
+        });
+        const data = {
+          ...req.body,
+          user_id: user.id,
+        };
+        const newLog = await db.collection('putt_logs').insertOne(data);
         res.status(201).json({ success: true, data: newLog });
       } catch (error) {
         res.status(400).json({ success: false });
