@@ -5,45 +5,45 @@ export default async (req, res) => {
   const db = (await clientPromise).db(process.env.MONGODB_DB);
   const session = await getSession({ req });
   if (!session) {
-    res.send({
-      error: 'You must be sign in to view the protected content on this page.',
+    return res.send({
+      error: 'You sign in to perform this action.',
     });
   }
+
+  const user = await db.collection('users').findOne({
+    email: session.user.email,
+  });
+
   switch (req.method) {
     case 'GET':
-      try {
-        const user = await db.collection('users').findOne({
-          email: session.user.email,
-        });
-        const puttLogs = await db
-          .collection('putt_logs')
-          .find({
-            user_id: user.id,
-          })
-          .sort({ date: -1 })
-          .toArray();
-        res.status(200).json(puttLogs);
-      } catch (error) {
-        res.status(400).json(error);
-      }
-      break;
+      return await getUserLogs();
     case 'POST':
-      try {
-        const user = await db.collection('users').findOne({
-          email: session.user.email,
-        });
-        const data = {
-          ...req.body,
-          user_id: user.id,
-        };
-        const newLog = await db.collection('putt_logs').insertOne(data);
-        res.status(201).json({ success: true, data: newLog });
-      } catch (error) {
-        res.status(400).json({ success: false });
-      }
-      break;
+      return await newLog();
     default:
-      res.status(400).json({ success: false });
-      break;
+      return res.status(400).json({ success: false });
+  }
+
+  async function getUserLogs() {
+    const puttLogs = await db
+      .collection('putt_logs')
+      .find({
+        user_id: user.id,
+      })
+      .sort({ date: -1 })
+      .toArray()
+      .catch((error) => res.status(400).json(error));
+    return res.status(200).json(puttLogs);
+  }
+
+  async function newLog() {
+    const data = {
+      ...req.body,
+      user_id: user.id,
+    };
+    const newLog = await db
+      .collection('putt_logs')
+      .insertOne(data)
+      .catch((error) => res.status(400).json(error));
+    return res.status(201).json({ success: true, data: newLog });
   }
 };
