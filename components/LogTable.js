@@ -1,7 +1,13 @@
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 
 const LogTable = ({ puttLog }) => (
-  <Box maxHeight="350" minW="300" overflow="auto" marginBottom="10">
+  <Box
+    maxHeight="350"
+    minW="300"
+    maxWidth="350"
+    margin="0 auto"
+    marginBottom="10"
+  >
     <Text
       fontSize="sm"
       fontWeight="semibold"

@@ -1,4 +1,5 @@
 import { useQuery } from 'react-query';
+import NextLink from 'next/link';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import {
@@ -14,8 +15,6 @@ import {
   Stack,
   VStack,
   Box,
-  Button,
-  Code,
   CircularProgress,
   CircularProgressLabel,
   Table,
@@ -29,8 +28,9 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { getSession } from 'next-auth/react';
-import CircleStats from '../components/CircleStats';
-import LogTable from '../components/LogTable';
+import { SingleCircle } from 'components/CircleStats';
+import LogTable from 'components/LogTable';
+import { CIRCLE_RANGES } from 'utils/constants';
 
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -46,9 +46,11 @@ const Dashboard = (props) => {
       mt="8"
     >
       <Heading>Dashboard</Heading>
-      <Button my="4" leftIcon={<AddIcon />}>
-        New Putt Log
-      </Button>
+      <NextLink href="/new">
+        <Button my="4" leftIcon={<AddIcon />}>
+          New Putt Log
+        </Button>
+      </NextLink>
       <LogListGrid props={props} />
     </Flex>
   );
@@ -88,30 +90,8 @@ const LogListGrid = (props) => {
 
   if (error) return 'An error has occurred: ' + error.message;
 
-  const c1Totals = {
-    makes: 0,
-    attempts: 0,
-    percent: 0,
-  };
-
-  data.reduce((current, next) => {
-    console.log({ current, next });
-    let makes = current + next.c1Stats.makes;
-
-    c1Totals.makes = makes;
-    return makes;
-  }, 0);
-
-  console.log(c1Totals);
-
   return (
-    <Box minW="300" overflow="auto" mt="8" mb="20">
-      {/* <SimpleGrid columns={4} mt="8">
-        <Text>Completed</Text>
-        <Text textAlign="center">C1</Text>
-        <Text textAlign="center">C2</Text>
-        <Text>Notes</Text>
-      </SimpleGrid> */}
+    <Box w="100%" overflow="auto" mt="8" mb="20">
       <Accordion allowMultiple transition="0.3s all">
         {data.map((o, i) => {
           return (
@@ -126,7 +106,13 @@ const LogListGrid = (props) => {
                   transform: 'translateY(10px)',
                 }}
               >
-                <SimpleGrid columns={4} alignItems="center" py="4" width="100%">
+                <SimpleGrid
+                  columns={4}
+                  minChildWidth="50px"
+                  alignItems="center"
+                  py="4"
+                  width="100%"
+                >
                   <Box fontSize="sm">{timeAgo.format(new Date(o.date))}</Box>
                   <Box>
                     <CircularProgress value={o.c1Stats.percent}>
@@ -143,7 +129,7 @@ const LogListGrid = (props) => {
                     </CircularProgress>
                   </Box>
                   <Box textAlign="left" fontSize="sm">
-                    {o.notes}
+                    <Text isTruncated>{o.notes}</Text>
                   </Box>
                 </SimpleGrid>
                 <AccordionIcon maxWidth="50px" />
@@ -153,18 +139,66 @@ const LogListGrid = (props) => {
                 borderRadius="0 0 8px 8px"
                 mb="10px"
                 border="1px solid var(--chakra-colors-gray-700)"
+                position="relative"
               >
-                <Flex wrap="wrap" justifyContent="space-around">
-                  <CircleStats
-                    c1Stats={o.c1Stats}
-                    c2Stats={o.c2Stats}
+                <SimpleGrid
+                  columns={2}
+                  minChildWidth="280px"
+                  spacingX="20px"
+                  spacingY="0"
+                >
+                  <SingleCircle
+                    circleStats={o.c1Stats}
                     puttLog={o.puttLog}
-                    flexDir="row"
+                    range={CIRCLE_RANGES.CIRCLE_1}
+                  />
+                  <SingleCircle
+                    circleStats={o.c2Stats}
+                    puttLog={o.puttLog}
+                    range={CIRCLE_RANGES.CIRCLE_2}
                   />
                   <Box my={8}>
                     <LogTable puttLog={o.puttLog} my={8} />
                   </Box>
-                </Flex>
+                  <Box my={8}>
+                    <Text
+                      fontSize="sm"
+                      fontWeight="semibold"
+                      color="gray.700"
+                      textTransform="uppercase"
+                      textAlign="center"
+                      mb="8"
+                    >
+                      Notes
+                    </Text>
+                    <Box
+                      borderRadius="8"
+                      boxShadow="inner"
+                      minHeight="200px"
+                      p="6"
+                      background="gray.50"
+                      color="gray.600"
+                      textAlign="left"
+                      fontSize="sm"
+                      maxWidth="350px"
+                      margin="0 auto"
+                    >
+                      {o.notes}
+                    </Box>
+                  </Box>
+                </SimpleGrid>
+                <Box
+                  w="100%"
+                  // background="gray.100"
+                  color="gray.500"
+                  p="4"
+                  zIndex="-1"
+                  position="relative"
+                >
+                  <Text fontSize="sm" fontWeight="light" fontStyle="italic">
+                    Completed {new Date(o.date).toLocaleString()}
+                  </Text>
+                </Box>
               </AccordionPanel>
             </AccordionItem>
           );

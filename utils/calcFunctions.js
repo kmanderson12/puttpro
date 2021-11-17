@@ -14,4 +14,24 @@ function calculatePercent(currentMakes, newMakes, currentAttempts) {
   );
 }
 
-export { calculateMakes, calculateAttempts, calculatePercent };
+function calculateRangeStats(arr) {
+  const totalMakes = arr.reduce(
+    (total, next) => total + parseFloat(next.makes),
+    0
+  );
+  const totalAttempts = arr.reduce(
+    (total, next) => total + parseFloat(next.attempts),
+    0
+  );
+  return {
+    totalMakes,
+    totalAttempts,
+  };
+}
+
+export {
+  calculateMakes,
+  calculateAttempts,
+  calculatePercent,
+  calculateRangeStats,
+};

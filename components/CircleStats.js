@@ -5,168 +5,97 @@ import {
   CircularProgressLabel,
   Text,
   Flex,
+  SimpleGrid,
 } from '@chakra-ui/react';
+import { CIRCLE_RANGES, circleRange } from 'utils/constants';
+import { calculateRangeStats } from 'utils/calcFunctions';
 
 const CircleStats = ({ c1Stats, c2Stats, puttLog, flexDir = 'column' }) => {
-  const c1Short = puttLog.filter((i) => i.distance <= 11);
-  const c1Medium = puttLog.filter((i) => i.distance <= 22 && i.distance > 11);
-  const c1Long = puttLog.filter((i) => i.distance <= 33 && i.distance > 22);
+  return (
+    <Flex direction={flexDir} align="center" w="100%" flexWrap="wrap">
+      <SingleCircle
+        circleStats={c1Stats}
+        puttLog={puttLog}
+        range={CIRCLE_RANGES.CIRCLE_1}
+      />
+      <SingleCircle
+        circleStats={c2Stats}
+        puttLog={puttLog}
+        range={CIRCLE_RANGES.CIRCLE_2}
+      />
+    </Flex>
+  );
+};
 
-  const c2Short = puttLog.filter((i) => i.distance <= 44 && i.distance > 33);
-  const c2Medium = puttLog.filter((i) => i.distance <= 55 && i.distance > 44);
-  const c2Long = puttLog.filter((i) => i.distance <= 66 && i.distance > 55);
+const SingleCircle = ({ circleStats, puttLog, range }) => {
+  let circleStatObj = {};
+  const circleOnly = circleRange.filter(
+    (i) => i.min >= range.min && i.max <= range.max
+  );
 
-  function calculateRangeStats(obj) {
-    const totalMakes = obj.reduce(
-      (total, next) => total + parseFloat(next.makes),
-      0
+  circleOnly.map((item, idx) => {
+    let newArr = puttLog.filter(
+      (log) => log.distance > item.min && log.distance <= item.max
     );
-    const totalAttempts = obj.reduce(
-      (total, next) => total + parseFloat(next.attempts),
-      0
-    );
-    return {
-      totalMakes,
-      totalAttempts,
-    };
-  }
+    if (newArr.length > 0) {
+      let statObj = calculateRangeStats(newArr);
+      statObj.percent = (statObj.totalMakes / statObj.totalAttempts) * 100 || 0;
+      statObj.text = `${statObj.totalMakes}/${statObj.totalAttempts}`;
+      circleStatObj[`${item.range}Stats`] = statObj;
+    }
+  });
 
-  const c1ShortStats = calculateRangeStats(c1Short);
-  const c1MediumStats = calculateRangeStats(c1Medium);
-  const c1LongStats = calculateRangeStats(c1Long);
-
-  const c2ShortStats = calculateRangeStats(c2Short);
-  const c2MediumStats = calculateRangeStats(c2Medium);
-  const c2LongStats = calculateRangeStats(c2Long);
+  const short = circleStatObj[`${range.name.toLowerCase()}ShortStats`];
+  const medium = circleStatObj[`${range.name.toLowerCase()}MediumStats`];
+  const long = circleStatObj[`${range.name.toLowerCase()}LongStats`];
 
   return (
-    <Flex direction={flexDir} align="center">
-      <Flex direction="column" minWidth="300px" my={8}>
-        <Text
-          fontSize="sm"
-          color="gray.700"
-          fontWeight="semibold"
-          textTransform="uppercase"
-          textAlign="center"
-        >
-          C1 Stats
-        </Text>
-        <Flex align="center" marginTop="8" marginBottom="4">
-          <Box>
-            <CircularProgress value={c1Stats.percent} size="120">
-              <CircularProgressLabel>{c1Stats.percent}%</CircularProgressLabel>
-            </CircularProgress>
-          </Box>
-          <Flex direction="column" marginLeft="20px">
-            <Flex minW="200px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Short
-              </Text>
-              <Text>
-                {c1ShortStats.totalMakes}/{c1ShortStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c1ShortStats.totalMakes / c1ShortStats.totalAttempts) * 100 ||
-                0
-              }
-            />
-            <Flex minW="150px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Medium
-              </Text>
-              <Text>
-                {c1MediumStats.totalMakes}/{c1MediumStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c1MediumStats.totalMakes / c1MediumStats.totalAttempts) *
-                  100 || 0
-              }
-            />
-            <Flex minW="150px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Long
-              </Text>
-              <Text>
-                {c1LongStats.totalMakes}/{c1LongStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c1LongStats.totalMakes / c1LongStats.totalAttempts) * 100 || 0
-              }
-            />
+    <Flex direction="column" my={8} alignItems="center">
+      <Text
+        fontSize="sm"
+        color="gray.700"
+        fontWeight="semibold"
+        textTransform="uppercase"
+        textAlign="center"
+      >
+        {range.name} Stats
+      </Text>
+      <Flex
+        alignItems="center"
+        marginTop="8"
+        marginBottom="4"
+        flexWrap="wrap"
+        justifyContent="center"
+      >
+        <Box>
+          <CircularProgress value={circleStats.percent} size="120">
+            <CircularProgressLabel>
+              {circleStats.percent}%
+            </CircularProgressLabel>
+          </CircularProgress>
+        </Box>
+        <Flex direction="column">
+          <Flex minW="200px" justifyContent="space-between">
+            <Text fontWeight="bold" color="gray.700">
+              Short
+            </Text>
+            <Text>{short?.text || '0/0'}</Text>
           </Flex>
-        </Flex>
-      </Flex>
-      <Flex direction="column" minWidth="300px" my={8}>
-        <Text
-          fontSize="sm"
-          color="gray.700"
-          fontWeight="semibold"
-          textTransform="uppercase"
-          textAlign="center"
-        >
-          C2 Stats
-        </Text>
-        <Flex align="center" marginTop="8" marginBottom="4">
-          <Box>
-            <CircularProgress value={c2Stats.percent} size="120">
-              <CircularProgressLabel>{c2Stats.percent}%</CircularProgressLabel>
-            </CircularProgress>
-          </Box>
-          <Flex direction="column" marginLeft="20px">
-            <Flex minW="200px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Short
-              </Text>
-              <Text>
-                {c2ShortStats.totalMakes}/{c2ShortStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c2ShortStats.totalMakes / c2ShortStats.totalAttempts) * 100 ||
-                0
-              }
-            />
-            <Flex minW="150px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Medium
-              </Text>
-              <Text>
-                {c2MediumStats.totalMakes}/{c2MediumStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c2MediumStats.totalMakes / c2MediumStats.totalAttempts) *
-                  100 || 0
-              }
-            />
-            <Flex minW="150px" justifyContent="space-between">
-              <Text fontWeight="bold" color="gray.700">
-                Long
-              </Text>
-              <Text>
-                {c2LongStats.totalMakes}/{c2LongStats.totalAttempts}
-              </Text>
-            </Flex>
-            <Progress
-              mb="4"
-              value={
-                (c2LongStats.totalMakes / c2LongStats.totalAttempts) * 100 || 0
-              }
-            />
+          <Progress mb="4" value={short?.percent || 0} />
+          <Flex minW="150px" justifyContent="space-between">
+            <Text fontWeight="bold" color="gray.700">
+              Medium
+            </Text>
+            <Text>{medium?.text || '0/0'}</Text>
           </Flex>
+          <Progress mb="4" value={medium?.percent || 0} />
+          <Flex minW="150px" justifyContent="space-between">
+            <Text fontWeight="bold" color="gray.700">
+              Long
+            </Text>
+            <Text>{long?.text || '0/0'}</Text>
+          </Flex>
+          <Progress mb="4" value={long?.percent || 0} />
         </Flex>
       </Flex>
     </Flex>
@@ -174,3 +103,4 @@ const CircleStats = ({ c1Stats, c2Stats, puttLog, flexDir = 'column' }) => {
 };
 
 export default CircleStats;
+export { SingleCircle };
