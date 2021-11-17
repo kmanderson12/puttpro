@@ -21,6 +21,26 @@ export default async (req, res) => {
         res.status(400).json(error);
       }
       break;
+    case 'PUT':
+      try {
+        const data = req.body;
+        const user = await db.collection('users').updateOne(
+          {
+            email: session.user.email,
+          },
+          {
+            $set: {
+              name: data.name,
+              location: data.location,
+              imageURL: data.imageURL,
+            },
+          }
+        );
+        res.status(200).json(user);
+      } catch (error) {
+        res.status(400).json(error);
+      }
+      break;
     default:
       res.status(400).json({ success: false });
       break;

@@ -1,9 +1,32 @@
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import { useSession, signOut } from 'next-auth/react';
-import { Avatar, Flex, Heading, Link, Button } from '@chakra-ui/react';
+import { useQuery } from 'react-query';
+import {
+  Avatar,
+  Flex,
+  Heading,
+  Link,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuList,
+  MenuItem,
+} from '@chakra-ui/react';
 
 const Header = () => {
   const { data: session, status } = useSession();
+  const { isLoading, error, data, isFetching } = useQuery('userData', () =>
+    fetch('/api/user').then((res) => res.json())
+  );
+
+  const router = useRouter();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    router.push(href);
+  };
+
   return (
     <Flex
       as="header"
@@ -34,17 +57,27 @@ const Header = () => {
         )}
         {session && (
           <>
-            <NextLink href="/dashboard">
-              <Link mx={{ base: '2', md: '6' }}>Dashboard</Link>
-            </NextLink>
-            <Button onClick={() => signOut()} mx={{ base: '2', md: '6' }}>
-              Sign Out
-            </Button>
-            <NextLink href="/profile">
-              <Link ml={{ base: '2', md: '6' }}>
-                <Avatar bg="blue.500" />
-              </Link>
-            </NextLink>
+            <Menu>
+              <MenuButton>
+                <Avatar
+                  bg="blue.500"
+                  size="lg"
+                  boxShadow="md"
+                  border="2px solid var(--chakra-colors-gray-800)"
+                  src={data?.imageURL || ''}
+                />
+              </MenuButton>
+              <MenuList>
+                <NextLink href="/profile">
+                  <MenuItem>Profile</MenuItem>
+                </NextLink>
+                <NextLink href="/dashboard">
+                  <MenuItem>Dashboard</MenuItem>
+                </NextLink>
+                <MenuDivider />
+                <MenuItem onClick={() => signOut()}>Sign Out</MenuItem>
+              </MenuList>
+            </Menu>
           </>
         )}
       </Flex>
