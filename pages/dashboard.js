@@ -19,6 +19,7 @@ import {
   Td,
   Spinner,
 } from '@chakra-ui/react';
+import { getSession } from 'next-auth/react';
 
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -33,7 +34,7 @@ const Dashboard = (props) => {
       mt="8"
     >
       <Heading>Dashboard</Heading>
-      <LogList />
+      <LogList props={props} />
     </Flex>
   );
 };
@@ -65,13 +66,12 @@ const PuttLogCards = (props) => (
 
 const LogList = (props) => {
   const { isLoading, error, data, isFetching } = useQuery('puttLogs', () =>
-    fetch('/api/logs').then((res) => res.json())
+    fetch(`/api/logs`).then((res) => res.json())
   );
 
   if (isLoading) return <Spinner margin="20px auto" size="xl" />;
 
   if (error) return 'An error has occurred: ' + error.message;
-
   return (
     <Box minW="300" overflow="auto" marginBottom="10">
       <Table variant="simple" my="8">
@@ -122,3 +122,20 @@ const DataDump = (props) => (
     </Code>
   </>
 );
+
+export async function getServerSideProps(context) {
+  const session = await getSession({ req: context.req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}

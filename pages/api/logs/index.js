@@ -1,14 +1,25 @@
+import { getSession } from 'next-auth/react';
 import clientPromise from 'utils/mongodb.js';
 
 export default async (req, res) => {
   const db = (await clientPromise).db(process.env.MONGODB_DB);
-
+  const session = await getSession({ req });
+  if (!session) {
+    res.send({
+      error: 'You must be sign in to view the protected content on this page.',
+    });
+  }
   switch (req.method) {
     case 'GET':
       try {
+        const user = await db.collection('users').findOne({
+          email: session.user.email,
+        });
         const puttLogs = await db
           .collection('putt_logs')
-          .find({})
+          .find({
+            user_id: user.id,
+          })
           .sort({ date: -1 })
           .toArray();
         res.status(200).json(puttLogs);
