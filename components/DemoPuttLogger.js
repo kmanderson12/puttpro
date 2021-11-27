@@ -123,7 +123,7 @@ export default function PuttLogger(props) {
       maxW="400"
     >
       <VStack mb="8">
-        <Heading>Dashboard</Heading>
+        <Heading>New Putt Log</Heading>
         <Tag size="sm" colorScheme="blue">
           Demo
         </Tag>
