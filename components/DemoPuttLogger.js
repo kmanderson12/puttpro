@@ -1,7 +1,16 @@
 import { useState, useContext } from 'react';
 import { store, ADD_ITEM } from 'components/context/DemoProvider';
 import router from 'next/router';
-import { Button, Box, Text, Heading, Flex, Textarea } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Text,
+  Heading,
+  Flex,
+  Textarea,
+  VStack,
+  Tag,
+} from '@chakra-ui/react';
 import {
   calculateMakes,
   calculateAttempts,
@@ -113,7 +122,12 @@ export default function PuttLogger(props) {
       pb="10"
       maxW="400"
     >
-      <Heading mb="8">New Putt Log</Heading>
+      <VStack mb="8">
+        <Heading>Dashboard</Heading>
+        <Tag size="sm" colorScheme="blue">
+          Demo
+        </Tag>
+      </VStack>
       <DistanceSlider
         value={distance}
         increment={increment}
